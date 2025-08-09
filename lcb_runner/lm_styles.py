@@ -863,9 +863,24 @@ LanguageModelList: list[LanguageModel] = [
     ),
 ]
 
-LanguageModelStore: dict[str, LanguageModel] = {
-    lm.model_name: lm for lm in LanguageModelList
-}
+class _LanguageModelStore(dict):
+    def __init__(self):
+        super().__init__({lm.model_name: lm for lm in LanguageModelList})
+
+    def __getitem__(self, model_name: str) -> LanguageModel:
+        if model_name in self:
+            return super().__getitem__(model_name)
+        else:
+            # Create a generic model with LMStyle.GenericBase for unregistered models
+            return LanguageModel(
+                model_name=model_name,
+                model_repr=model_name,
+                model_style=LMStyle.GenericBase,
+                release_date=None,
+                link=None
+            )
+
+LanguageModelStore: _LanguageModelStore = _LanguageModelStore()
 
 if __name__ == "__main__":
     print(list(LanguageModelStore.keys()))
