@@ -131,6 +131,12 @@ def get_args():
         default=None,
         help="End date for the contest to filter the evaluation file (format - YYYY-MM-DD)",
     )
+    parser.add_argument(
+        "--dataset-path",
+        type=str,
+        default=None,
+        help="Path to livecodebench dataset",
+    )
 
     args = parser.parse_args()
 

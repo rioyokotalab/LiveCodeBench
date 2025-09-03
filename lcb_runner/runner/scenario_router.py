@@ -50,12 +50,13 @@ def build_prompt_benchmark(
     if scenario == Scenario.codegeneration:
         not_fast: bool = args.not_fast
         if not_fast:
-            benchmark = load_code_generation_dataset_not_fast(args.release_version)
+            benchmark = load_code_generation_dataset_not_fast(args.release_version, args.dataset_path)
         else:
             benchmark = load_code_generation_dataset(
                 args.release_version,
                 start_date=args.start_date,
-                end_date=args.end_date
+                end_date=args.end_date,
+                dataset_path=args.dataset_path,
             )
         benchmark = sorted(benchmark, key=lambda x: x.question_id)
         format_prompt = format_prompt_generation

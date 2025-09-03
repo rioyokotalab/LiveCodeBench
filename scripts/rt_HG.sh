@@ -22,7 +22,7 @@ export HF_HOME="/groups/gag51395/fujii/hf_cache"
 
 source .venv/bin/activate
 
-MODEL_NAME="tokyotech-llm/Llama-3.1-8B-Swallow-v0.5-LR2.5e-5-WD0.1-iter0025000"
+MODEL_NAME="tokyotech-llm/Llama-3.1-8B-swallow-code-v2-exp8-iter0012500"
 
 export CUDA_VISIBLE_DEVICES=0
 export TOKENIZERS_PARALLELISM=false
@@ -30,4 +30,5 @@ python -m lcb_runner.runner.main \
   --model $MODEL_NAME \
   --scenario codegeneration \
   --evaluate \
-  --release_version release_v6
+  --release_version release_v6 \
+  --dataset-path "/groups/gcg51558/datasets/eval/code_generation_lite"
