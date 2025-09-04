@@ -30,6 +30,6 @@ python -m lcb_runner.runner.main \
   --evaluate \
   --release_version release_v6 \
   --dataset-path "/groups/gcg51558/datasets/eval/code_generation_lite" \
-  --all_result_csv $RESULT_CSV
+  --all_result_csv "../${RESULT_CSV}"
 
 
