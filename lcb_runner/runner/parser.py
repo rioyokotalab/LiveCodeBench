@@ -137,6 +137,12 @@ def get_args():
         default=None,
         help="Path to livecodebench dataset",
     )
+    parser.add_argument(
+        "--all_result_csv",
+        type=str,
+        default=None,
+    )
+
 
     args = parser.parse_args()
 

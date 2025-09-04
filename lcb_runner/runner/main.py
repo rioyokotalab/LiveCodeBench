@@ -14,6 +14,49 @@ from lcb_runner.runner.scenario_router import (
     get_metrics,
 )
 
+import csv, os
+
+def update_scores_row(all_result_path: str, model: str, col_index: int, task: str, score, overwrite_header: bool = False):
+    if col_index < 1:
+        raise ValueError("col_index は 1 以上を指定してください（1 列目は 'model'）。")
+
+    header, rows = [], []
+    if os.path.exists(all_result_path):
+        with open(all_result_path, "r", newline="", encoding="utf-8") as f:
+            r = list(csv.reader(f))
+            if r:
+                header, rows = r[0], r[1:]
+    if not header:
+        header = []
+    if len(header) < col_index:
+        header.extend([""] * (col_index - len(header)))
+    header[0] = "model"
+    tgt = col_index - 1  # 0-based index
+    if header[tgt] in ("", task) or overwrite_header:
+        header[tgt] = task
+    else:
+        print(f"This column {col_index} is already existed! {header[tgt]}")
+    row = None
+    for r in rows:
+        if r and r[0] == model:
+            row = r
+            break
+    if row is None:
+        row = [""]
+        row[0] = model
+        rows.append(row)
+    if len(row) < len(header):
+        row.extend([""] * (len(header) - len(row)))
+    row[tgt] = str(score)
+    for r in rows:
+        if len(r) < len(header):
+            r.extend([""] * (len(header) - len(r)))
+    os.makedirs(os.path.dirname(all_result_path) or ".", exist_ok=True)
+    with open(all_result_path, "w", newline="", encoding="utf-8") as f:
+        w = csv.writer(f)
+        w.writerow(header)
+        w.writerows(rows)
+
 
 def main():
     args = get_args()
@@ -215,6 +258,8 @@ def main():
             ]
 
         save_eval_results = old_eval_all_results + save_eval_results
+        if args.all_result_csv:
+            update_scores_row(args.all_result_csv, args.model, 4, "LiveCodeBench", f"{metrics[0]['pass@1']:.3f}")
 
         with open(eval_file, "w") as f:
             json.dump(metrics, f, indent=4)
